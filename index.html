@@ -392,4 +392,710 @@
       background: rgba(255, 255, 255, 0.08);
       color: var(--text-main);
       border: 1px solid rgba(255, 255, 255, 0.14);
-      padding
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ctrl-btn:hover {
+      background: var(--accent-orange);
+      border-color: var(--accent-gold);
+      color: #FFF;
+      transform: translateY(-2px);
+    }
+
+    .dots-nav {
+      display: flex;
+      gap: 7px;
+      padding: 0 8px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.25);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .dot.active {
+      width: 26px;
+      border-radius: 999px;
+      background: var(--accent-gold);
+      box-shadow: 0 0 10px var(--accent-gold);
+    }
+
+    /* Hộp Teleprompter / Lời thoại thuyết trình */
+    .speaker-notes-drawer {
+      position: fixed;
+      bottom: 82px;
+      right: 32px;
+      width: min(460px, 90vw);
+      max-height: 45vh;
+      overflow-y: auto;
+      background: rgba(7, 11, 25, 0.92);
+      border: 1px solid var(--accent-gold);
+      border-radius: 18px;
+      padding: 20px 24px;
+      z-index: 110;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
+      transform: translateY(30px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .speaker-notes-drawer.open {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent-gold);
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .notes-content {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #E2E8F0;
+    }
+
+    .notes-transition {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed rgba(255, 184, 0, 0.35);
+      font-size: 0.88rem;
+      color: #FFD166;
+      font-style: italic;
+    }
+
+    /* Responsive cho màn hình nhỏ */
+    @media (max-width: 1024px) {
+      .grid-5, .grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .slide {
+        padding: 70px 4vw 90px;
+        overflow-y: auto;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .grid-2, .grid-3, .grid-5 {
+        grid-template-columns: 1fr;
+      }
+      .dots-nav {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nền Gradient & Ánh sáng chân trời -->
+  <div id="ambient-bg"></div>
+  <div class="horizon-glow" id="horizon-glow"></div>
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Thanh tiến trình -->
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+
+  <!-- Thanh điều hướng trên -->
+  <header class="top-nav">
+    <div class="brand-badge">✨ Chuyên đề THPT: Dám Ước Mơ – Dám Bước Ra</div>
+    <div class="slide-counter" id="slide-counter">01 / 11</div>
+  </header>
+
+  <!-- Vùng trình chiếu 11 Slides (10 Slide chuẩn + 1 Slide Phản biện sắc bén nâng cấp) -->
+  <main class="deck-viewport" id="deck">
+
+    <!-- SLIDE 1: MỞ ĐẦU ẤN TƯỢNG -->
+    <section class="slide active" data-index="0">
+      <span class="slide-tag stagger-item">Bài thuyết trình truyền cảm hứng</span>
+      <h1 class="hero-title stagger-item">DÁM ƯỚC MƠ<br/>DÁM BƯỚC RA</h1>
+      <p class="slide-subtitle stagger-item">
+        Mỗi chúng ta đều có một bầu trời riêng để hướng tới. Nhưng giữa "mong muốn trong suy nghĩ" và "hiện thực trước mắt" là một bước chân can đảm bước ra khỏi vùng an toàn.
+      </p>
+      <div class="stagger-item">
+        <div class="question-banner">
+          🌅 “Nếu biết chắc mình không thất bại, bạn sẽ dám làm điều gì ngay hôm nay?”
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: ƯỚC MƠ LÀ GÌ & VÌ SAO TUỔI TRẺ CẦN ƯỚC MƠ? -->
+    <section class="slide" data-index="1">
+      <span class="slide-tag stagger-item">Khởi nguồn của hành trình</span>
+      <h2 class="slide-title stagger-item">Ước Mơ Là Gì & Vì Sao Tuổi Trẻ Cần Ước Mơ?</h2>
+      <div class="grid-3 stagger-item">
+        <div class="glass-card tilt-card">
+          <div class="pill">Bản chất</div>
+          <div class="card-title">🌟 Khác với mong muốn nhất thời</div>
+          <p class="card-text">
+            Ước mơ là mục tiêu tương lai khiến ta sẵn sàng nỗ lực hành động: từ trở thành bác sĩ, kỹ sư, giáo viên đến việc đỗ ngôi trường mơ ước hay làm điều từng nghĩ là không thể.
+          </p>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="pill">Vai trò</div>
+          <div class="card-title">🧭 Kim chỉ nam của tuổi trẻ</div>
+          <p class="card-text">
+            Giúp việc học tập, rèn luyện mỗi ngày có mục đích rõ ràng. Tuổi trẻ là quãng thời gian quý giá nhất để thử sức, được phép sai và chủ động chọn con đường riêng.
+          </p>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="pill">Ví dụ thực tế</div>
+          <div class="card-title">🩺 Chủ động lựa chọn</div>
+          <p class="card-text">
+            Muốn làm bác sĩ giúp bạn có lý do học tốt các môn tự nhiên và rèn tính kiên trì. Dù sau này nhận ra cần đổi hướng, bạn vẫn là người cầm lái cuộc đời mình.
+          </p>
+        </div>
+      </div>
+      <div class="highlight-box stagger-item">
+        💡 <strong>Quy luật định hướng:</strong> “Ước mơ giống như một điểm đến giúp ta biết mình đi về đâu, còn <strong>hành động</strong> quyết định ta đi được bao xa.”
+      </div>
+    </section>
+
+    <!-- SLIDE 3: TẠI SAO CHÚNG TA SỢ BƯỚC RA? (5 RÀO CẢN) -->
+    <section class="slide" data-index="2">
+      <span class="slide-tag stagger-item">Nhận diện nỗi sợ</span>
+      <h2 class="slide-title stagger-item">5 Rào Cản Khiến Người Trẻ Chùn Bước</h2>
+      <div class="grid-5 stagger-item">
+        <div class="glass-card tilt-card">
+          <div class="card-number">01</div>
+          <div class="card-title">Sợ thất bại</div>
+          <p class="card-text">“Làm không được thì sao?” Ngại đăng ký thi vì sợ thua, ngại thuyết trình vì sợ nói sai bị cả lớp cười.</p>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="card-number">02</div>
+          <div class="card-title">Sợ bị đánh giá</div>
+          <p class="card-text">Lo người thân không ủng hộ ngành học, bạn bè chê “không tương lai”, lung lay vì câu “Mày làm được không?”.</p>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="card-number">03</div>
+          <div class="card-title">Sợ thay đổi</div>
+          <p class="card-text">Chỉ quanh quẩn ở những môn đã giỏi, ngại thử sức lĩnh vực mới vì nghĩ ở yên hiện tại sẽ an toàn hơn.</p>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="card-number">04</div>
+          <div class="card-title">Quen sự ổn định</div>
+          <p class="card-text">Ngộ nhận mình “không có khả năng nói trước đám đông”, trong khi thực ra chỉ là chưa từng luyện tập đủ.</p>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="card-number">05</div>
+          <div class="card-title">Thiếu tự tin</div>
+          <p class="card-text">Độc thoại tiêu cực “Mình không giỏi như người ta” lặp đi lặp lại khiến ta bỏ cuộc trước cả khi bắt đầu.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: VÙNG AN TOÀN - NƠI DỄ CHỊU NHƯNG CÓ GIỚI HẠN -->
+    <section class="slide" data-index="3">
+      <span class="slide-tag stagger-item">Ranh giới của sự trưởng thành</span>
+      <h2 class="slide-title stagger-item">Vùng An Toàn: Dễ Chịu Nhưng Đóng Khung</h2>
+      <div class="grid-2 stagger-item">
+        <div class="glass-card zone-safe tilt-card">
+          <div class="pill" style="background: rgba(148,163,184,0.2); color: #CBD5E1; border-color: #64748B;">Bên trong vùng an toàn</div>
+          <div class="card-title">🛋️ Quen thuộc & Không rủi ro</div>
+          <ul class="bullet-list">
+            <li>Chỉ làm những việc đã biết chắc kết quả, không sợ bị chê cười.</li>
+            <li>Cảm giác thoải mái, êm đềm ngắn hạn nhưng làm thui chột tiềm năng.</li>
+            <li>Cái giá đắt nhất: Sự nuối tiếc <em>“Giá như hồi cấp 3 mình dám thử một lần...”</em></li>
+          </ul>
+        </div>
+        <div class="glass-card zone-growth tilt-card">
+          <div class="pill">Bước ra thế giới bên ngoài</div>
+          <div class="card-title">🚀 Thử thách & Khai phóng</div>
+          <ul class="bullet-list">
+            <li>Đối mặt với sự bỡ ngỡ ban đầu nhưng mở ra cơ hội và kỹ năng mới.</li>
+            <li>Hiểu rõ giới hạn thật sự của bản thân thay vì tự đoán mò trong lo sợ.</li>
+            <li>Mỗi lần vượt qua sự ngần ngại là một lần biên độ tự tin được mở rộng.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: DÁM BƯỚC RA KHÔNG CÓ NGHĨA LÀ KHÔNG SỢ -->
+    <section class="slide" data-index="4">
+      <span class="slide-tag stagger-item">Định nghĩa lại lòng dũng cảm</span>
+      <h2 class="slide-title stagger-item">Dám Bước Ra Không Có Nghĩa Là Hết Sợ</h2>
+      <p class="slide-subtitle stagger-item">
+        “Dám bước ra không phải là không sợ. Vẫn sợ, nhưng không để nỗi sợ quyết định thay mình.”
+      </p>
+      <div class="grid-3 stagger-item">
+        <div class="glass-card tilt-card">
+          <div class="card-title">🙋‍♂️ Xung phong phát biểu</div>
+          <p class="card-text">Tim vẫn đập nhanh, giọng còn hơi run nhưng cánh tay vẫn giơ lên. Lần đầu có thể lúng túng, nhưng lần thứ hai bạn sẽ vững vàng hơn.</p>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="card-title">🏆 Đăng ký một cuộc thi</div>
+          <p class="card-text">Thay vì tự nhủ “Để lần sau”, hãy điền tên mình vào danh sách. Dù thắng hay chưa, bạn đã chiến thắng sự trì hoãn của chính mình.</p>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="card-title">🎨 Thử một lĩnh vực mới</div>
+          <p class="card-text">Bắt đầu từ một việc nhỏ, làm chưa tốt thì sửa lại rồi tiếp tục. Chính chuỗi bước nhỏ đó biến ước mơ thành hiện thực.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: CÂU CHUYỆN TRUYỀN CẢM HỨNG (CÓ THẬT & KIỂM CHỨNG) -->
+    <section class="slide" data-index="5">
+      <span class="slide-tag stagger-item">Minh chứng sống động từ thực tế</span>
+      <h2 class="slide-title stagger-item">Những Bước Chân Không Đầu Hàng Giới Hạn</h2>
+      <div class="grid-3 stagger-item">
+        <div class="glass-card tilt-card">
+          <div class="pill">Nghị lực phi thường</div>
+          <div class="card-title">✒️ Thầy Nguyễn Ngọc Ký</div>
+          <p class="card-text">
+            Liệt cả hai tay từ năm 4 tuổi, thầy kiên trì tập viết bằng đôi chân dù chuột rút, phồng rộp đau đớn để trở thành Nhà giáo Ưu tú truyền cảm hứng cho nhiều thế hệ.
+          </p>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="pill">Dám thử sức sáng tạo</div>
+          <div class="card-title">🕹️ Nguyễn Hà Đông</div>
+          <p class="card-text">
+            Lập trình viên Việt Nam tự mình phát triển trò chơi <em>Flappy Bird</em> gây tiếng vang toàn cầu — minh chứng ý tưởng giản dị cũng trở nên phi thường khi dám bắt tay làm.
+          </p>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="pill">Vượt định kiến & xuất phát điểm</div>
+          <div class="card-title">👑 Hoa hậu H'Hen Niê</div>
+          <p class="card-text">
+            Từ cô gái dân tộc Ê-đê có hoàn cảnh khó khăn, cô bước qua định kiến để đăng quang Hoa hậu Hoàn vũ VN 2017 và vào Top 5 Miss Universe 2018.
+          </p>
+        </div>
+      </div>
+      <div class="highlight-box stagger-item">
+        ✨ <strong>Bài học chung:</strong> Xuất phát điểm hay nghịch cảnh không khóa chặt tương lai; điều quyết định là bạn có dám bước qua giới hạn của mình hay không.
+      </div>
+    </section>
+
+    <!-- SLIDE 7: 5 CHIẾN LƯỢC ĐỂ DÁM ƯỚC MƠ & DÁM BƯỚC RA -->
+    <section class="slide" data-index="6">
+      <span class="slide-tag stagger-item">Kim chỉ nam hành động</span>
+      <h2 class="slide-title stagger-item">5 Bước Thực Tế Để Bước Ra Khỏi Vùng An Toàn</h2>
+      <div class="grid-5 stagger-item">
+        <div class="glass-card tilt-card">
+          <div class="card-number">01</div>
+          <div class="card-title">Dám thử</div>
+          <p class="card-text">Muốn biết mình có hợp hay không thì phải trải nghiệm thực tế. Lần đầu làm tệ cũng giúp ta biết cần cải thiện gì.</p>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="card-number">02</div>
+          <div class="card-title">Dám thất bại</div>
+          <p class="card-text">Khi nói vấp hay điểm thấp, hãy hỏi: “Mình chuẩn bị chưa kỹ ở đâu?” để biến thất bại thành bài học thay vì dấu chấm hết.</p>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="card-number">03</div>
+          <div class="card-title">Chuẩn bị năng lực</div>
+          <p class="card-text">Không bước ra một cách liều lĩnh. Ước mơ cho lý do bắt đầu, nhưng kiến thức và kỹ năng mới giúp ta đi đường dài.</p>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="card-number">04</div>
+          <div class="card-title">Mục tiêu cụ thể</div>
+          <p class="card-text">Thay vì nói chung chung “muốn học giỏi”, hãy chia nhỏ thành số giờ tự học mỗi ngày và từng chuyên đề cần lấp đầy.</p>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="card-number">05</div>
+          <div class="card-title">Kiên trì & Điều chỉnh</div>
+          <p class="card-text">Đổi hướng đi khi hiểu rõ bản thân hơn không phải là bỏ cuộc. Kiên trì tiến bước nhưng linh hoạt điều chỉnh phương pháp.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 8: GÓC PHẢN BIỆN SẮC BÉN (NÂNG CẤP ĐẶC BIỆT TỪ TÀI LIỆU) -->
+    <section class="slide" data-index="7">
+      <span class="slide-tag stagger-item">Góc nhìn đa chiều & Lý trí</span>
+      <h2 class="slide-title stagger-item">Đối Diện 2 Phản Biện Lớn Nhất Về Ước Mơ</h2>
+      <div class="grid-2 stagger-item">
+        <div class="glass-card tilt-card">
+          <div class="pill">🛑 Phản biện 01</div>
+          <div class="card-title">“Mơ mộng xa xôi không nuôi sống được bản thân, cơm áo gạo tiền mới là cốt lõi?”</div>
+          <ul class="bullet-list">
+            <li><strong>Cân bằng thực tế:</strong> Theo đuổi ước mơ không có nghĩa là rũ bỏ trách nhiệm sinh tồn.</li>
+            <li><strong>Chiến lược “Hai chiếc ví”:</strong> Dùng việc học/công việc nền tảng ổn định (Ví 1) để nuôi dưỡng nguồn lực và thời gian cho đam mê (Ví 2).</li>
+            <li><strong>Bước ra có tính toán:</strong> Tích lũy kỹ năng và điểm tựa an toàn rồi dịch chuyển từng bước vững chắc.</li>
+          </ul>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="pill">🛑 Phản biện 02</div>
+          <div class="card-title">“Không phải ai cũng có sẵn điều kiện, vốn liếng và tài năng để thành công?”</div>
+          <ul class="bullet-list">
+            <li><strong>Ước mơ không phân biệt xuất thân:</strong> Ước mơ thoát nghèo, sống bình an và tử tế cũng cao quý ngang với ước mơ làm chủ tập đoàn.</li>
+            <li><strong>Vượt qua chính mình:</strong> Bước ra chỉ đơn giản là hôm nay tiến bộ hơn chính bạn của ngày hôm qua.</li>
+            <li><strong>Tài năng nảy mầm từ hành động:</strong> Không ai sinh ra đã hoàn hảo; tài năng được rèn giũa qua quá trình dám làm – dám sai – dám sửa.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="highlight-box stagger-item">
+        🏁 <strong>Đúc kết bản lĩnh:</strong> Giữ một <strong>“cái đầu lạnh”</strong> để lo toan thực tế và một <strong>“trái tim nóng”</strong> để nuôi dưỡng ước mơ.
+      </div>
+    </section>
+
+    <!-- SLIDE 9: THỬ THÁCH 7 NGÀY DÀNH CHO HỌC SINH THPT -->
+    <section class="slide" data-index="8">
+      <span class="slide-tag stagger-item">Biến cảm hứng thành hành động</span>
+      <h2 class="slide-title stagger-item">Thử Thách 7 Ngày Bước Khỏi Vùng An Toàn</h2>
+      <div class="grid-2 stagger-item">
+        <div class="glass-card tilt-card">
+          <div class="pill">Ngày 1 – Ngày 2</div>
+          <div class="card-title">🗣️ Phá vỡ sự im lặng</div>
+          <p class="card-text">Chủ động giơ tay phát biểu hoặc đặt ít nhất 1 câu hỏi cho thầy cô ngay trong tiết học trên lớp.</p>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="pill">Ngày 3 – Ngày 4</div>
+          <div class="card-title">📚 30 phút rèn năng lực mới</div>
+          <p class="card-text">Dành 30 phút mỗi ngày không nhìn điện thoại để luyện một kỹ năng mới (ngoại ngữ, lập trình, thuyết trình, giải đề khó).</p>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="pill">Ngày 5 – Ngày 6</div>
+          <div class="card-title">🤝 Chia sẻ & Kết nối</div>
+          <p class="card-text">Dũng cảm kể về mục tiêu/ngành học mơ ước của bạn với một người đáng tin cậy (thầy cô, cha mẹ, bạn thân) để lắng nghe góp ý.</p>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="pill">Ngày 7</div>
+          <div class="card-title">🔥 Một quyết định bước ra</div>
+          <p class="card-text">Đăng ký tham gia một câu lạc bộ, một cuộc thi học thuật/văn nghệ hoặc bắt tay thực hiện dự án cá nhân bạn đã trì hoãn từ lâu.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 10: THÔNG ĐIỆP DÀNH CHO MỖI NGƯỜI -->
+    <section class="slide" data-index="9">
+      <span class="slide-tag stagger-item">Lời nhắn gửi tâm huyết</span>
+      <h2 class="slide-title stagger-item">Bạn Không Cần Hoàn Hảo Mới Bắt Đầu</h2>
+      <p class="slide-subtitle stagger-item">
+        Đừng đợi đến khi hết sợ hãi hay đủ mọi điều kiện hoàn hảo mới dám bước đi. Chính mỗi bước chân nhỏ mỗi ngày mới là thứ tạo nên phiên bản xuất sắc của bạn.
+      </p>
+      <div class="question-banner stagger-item" style="border-color: var(--accent-gold); background: linear-gradient(135deg, rgba(255, 184, 0, 0.25), rgba(42, 27, 78, 0.6));">
+        🌟 “Chân trời không thuộc về người đứng nhìn, mà thuộc về đôi chân dám bước.”
+      </div>
+      <div class="grid-3 stagger-item" style="margin-top: 26px;">
+        <div class="glass-card tilt-card">
+          <div class="card-title">🌱 Bước nhỏ có ý nghĩa</div>
+          <p class="card-text">Một trang sách đọc thêm hôm nay là một viên gạch xây nền cho ước mơ ngày mai.</p>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="card-title">🛡️ Sai sót là người thầy</div>
+          <p class="card-text">Mỗi lần vấp ngã có nhìn lại đều giúp bạn trưởng thành và bản lĩnh hơn gấp bội.</p>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="card-title">⏳ Thời điểm tốt nhất</div>
+          <p class="card-text">Không phải là “để tuần sau”, mà chính là khoảnh khắc bạn quyết định hành động ngay hôm nay.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 11: KẾT THÚC ĐẦY CẢM XÚC -->
+    <section class="slide" data-index="10">
+      <span class="slide-tag stagger-item">Khép lại để mở ra một hành trình mới</span>
+      <h1 class="hero-title stagger-item">BƯỚC CHÂN ĐẦU TIÊN<br/>THUỘC VỀ BẠN!</h1>
+      <p class="slide-subtitle stagger-item">
+        Ở đầu buổi thuyết trình, chúng ta đã tự hỏi: <em>“Nếu không sợ thất bại, bạn sẽ dám làm điều gì?”</em><br/>
+        Và bây giờ, câu hỏi thực tế nhất dành cho mỗi chúng ta là:
+      </p>
+      <div class="stagger-item">
+        <div class="question-banner">
+          🚀 “Sau hôm nay, bạn sẽ làm điều gì ĐẦU TIÊN để tiến gần hơn đến ước mơ của mình?”
+        </div>
+      </div>
+      <div class="highlight-box stagger-item" style="max-width: 780px; margin-top: 28px;">
+        🙏 <strong>Cảm ơn thầy cô và các bạn đã lắng nghe!</strong> Chúc tập thể lớp chúng ta luôn giữ được “trái tim nóng” của ước mơ và “cái đầu lạnh” của bản lĩnh!
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Hộp Lời Thoại Thuyết Trình (Teleprompter) -->
+  <aside class="speaker-notes-drawer" id="notes-drawer">
+    <div class="notes-header">
+      <span id="notes-slide-title">🎙️ Lời thoại Slide 01</span>
+      <span style="cursor:pointer;" id="close-notes">✕ Đóng (N)</span>
+    </div>
+    <div class="notes-content" id="notes-body"></div>
+    <div class="notes-transition" id="notes-next"></div>
+  </aside>
+
+  <!-- Thanh điều khiển dưới cùng -->
+  <nav class="bottom-controls">
+    <button class="ctrl-btn" id="prev-btn" title="Slide trước (Phím mũi tên trái)">← Trước</button>
+    <div class="dots-nav" id="dots-nav"></div>
+    <button class="ctrl-btn" id="next-btn" title="Slide tiếp (Phím mũi tên phải / Space)">Tiếp →</button>
+    <button class="ctrl-btn" id="notes-btn" title="Bật/Tắt lời thoại thuyết trình (Phím N)">🎙️ Lời thoại (N)</button>
+    <button class="ctrl-btn" id="fs-btn" title="Toàn màn hình (Phím F)">⛶ Fullscreen</button>
+  </nav>
+
+  <script>
+    // Dữ liệu lời thoại thuyết trình tích hợp cho từng slide
+    const speakerNotes = [
+      {
+        title: "Slide 01: Mở đầu ấn tượng",
+        script: "Chào thầy cô và các bạn. Trước khi bắt đầu, mình muốn mời cả lớp thử tự hỏi bản thân một câu: 'Nếu biết chắc chắn mình không thất bại, bạn sẽ dám làm điều gì ngay hôm nay?' Mỗi chúng ta đều có những hoài bão rất đẹp, nhưng để biến nó thành sự thật, chúng ta cần một cây cầu mang tên Hành Động. Hãy cùng mình khám phá qua chủ đề: DÁM ƯỚC MƠ – DÁM BƯỚC RA.",
+        transition: "👉 Chuyển tiếp: Trước hết, hãy cùng định nghĩa thật rõ: Ước mơ thực chất là gì và khác gì với một mong muốn thoáng qua?"
+      },
+      {
+        title: "Slide 02: Ước mơ là gì & Vai trò với tuổi trẻ",
+        script: "Ước mơ không phải là một mong muốn nhất thời. Chúng ta có thể muốn rất nhiều thứ, nhưng ước mơ thực sự là điều khiến ta sẵn sàng nỗ lực để đạt được — từ việc trở thành bác sĩ, kỹ sư, giáo viên cho đến việc đỗ vào ngôi trường mơ ước. Ở tuổi học sinh THPT, ước mơ cho chúng ta một hướng đi riêng để việc học mỗi ngày có mục đích. Dù sau này bạn có điều chỉnh hướng đi khi hiểu mình hơn, bạn vẫn là người chủ động lựa chọn chứ không để hoàn cảnh quyết định thay.",
+        transition: "👉 Chuyển tiếp: Ước mơ đẹp và ý nghĩa như vậy, nhưng tại sao rất nhiều người trẻ lại ngần ngại không dám bắt đầu?"
+      },
+      {
+        title: "Slide 03: 5 Rào cản khiến người trẻ chùn bước",
+        script: "Nhìn vào thực tế học đường, có 5 rào cản lớn nhất giữ chân chúng mình. Thứ nhất là sợ thất bại: sợ thi không đậu, sợ thuyết trình nói sai bị cười. Thứ hai là sợ bị đánh giá bởi định kiến xung quanh hay một câu hỏi nghi ngờ 'Mày làm được không?'. Thứ ba là sợ thay đổi, chỉ thích học môn mình đã giỏi. Thứ tư là quá quen với sự ổn định — nhiều bạn nghĩ mình không có khiếu ăn nói, nhưng thực ra chỉ là chưa luyện tập đủ. Và thứ năm là sự tự ti lặp đi lặp lại làm ta bỏ cuộc từ trong trứng nước.",
+        transition: "👉 Chuyển tiếp: Tất cả 5 nỗi sợ ấy vô tình nhốt chúng ta vào bên trong một chiếc lồng êm ái mang tên: Vùng an toàn."
+      },
+      {
+        title: "Slide 04: Vùng an toàn - Nơi dễ chịu nhưng có giới hạn",
+        script: "Vùng an toàn là nơi chỉ có những thói quen quen thuộc. Ở đó rất dễ chịu: không giơ tay thì không bao giờ trả lời sai, không đăng ký thi thì không bao giờ sợ rớt. Nhưng cái giá của sự an toàn quá mức là chúng ta mãi dậm chân tại chỗ và mang theo nỗi tiếc nuối 'Giá như...'. Ngược lại, bước ra thế giới bên ngoài tuy có chút bỡ ngỡ, nhưng đó là nơi duy nhất giúp chúng ta khám phá giới hạn thật sự của bản thân.",
+        transition: "👉 Chuyển tiếp: Vậy có phải chúng ta phải đợi đến khi hết sạch nỗi sợ rồi mới dám bước ra khỏi vùng an toàn?"
+      },
+      {
+        title: "Slide 05: Dám bước ra không có nghĩa là không sợ",
+        script: "Câu trả lời là Không! 'Dám bước ra' không phải là không biết sợ. Vẫn sợ chứ, tim vẫn đập nhanh, tay vẫn run, nhưng chúng ta không để nỗi sợ quyết định thay mình. Đó là khi bạn vẫn giơ tay phát biểu dù hơi hồi hộp, vẫn đăng ký cuộc thi thay vì hẹn 'để lần sau'. Làm lần đầu có thể chưa tốt, mình sửa lại rồi tiếp tục.",
+        transition: "👉 Chuyển tiếp: Để thấy những bước chân nhỏ bé nhưng kiên cường ấy tạo nên kỳ tích thế nào, hãy cùng nhìn vào 3 tấm gương có thật ngay tại Việt Nam."
+      },
+      {
+        title: "Slide 06: Câu chuyện truyền cảm hứng",
+        script: "Chúng ta có cố Nhà giáo Ưu tú Nguyễn Ngọc Ký — vượt qua cơn sốt bại liệt năm 4 tuổi để viết nên cuộc đời phi thường bằng đôi chân. Chúng ta có anh Nguyễn Hà Đông — người tự mình lập trình nên Flappy Bird, chứng minh một ý tưởng đơn giản cũng có thể vươn tầm thế giới nếu dám thử sức. Và Hoa hậu H'Hen Niê — từ buôn làng khó khăn bước qua mọi định kiến để vươn tới Top 5 Miss Universe 2018. Xuất phát điểm không quyết định tương lai, chính sự dũng cảm bước ra mới là câu trả lời.",
+        transition: "👉 Chuyển tiếp: Vậy với học sinh chúng mình, làm thế nào để bước ra khỏi vùng an toàn một cách bài bản và hiệu quả nhất?"
+      },
+      {
+        title: "Slide 07: 5 Bước thực tế để bước ra",
+        script: "Chúng ta có 5 nguyên tắc cốt lõi: Một là Dám thử để biết mình phù hợp với điều gì. Hai là Dám thất bại — nếu thuyết trình bị vấp, hãy tự hỏi mình chuẩn bị chưa kỹ ở đâu để lần sau làm tốt hơn. Ba là Chuẩn bị kiến thức và năng lực, vì ước mơ cho lý do bắt đầu nhưng năng lực mới giúp đi xa. Bốn là Đặt mục tiêu cụ thể từng ngày thay vì nói chung chung 'muốn học giỏi'. Và năm là Kiên trì nhưng biết điều chỉnh linh hoạt khi hiểu rõ bản thân hơn.",
+        transition: "👉 Chuyển tiếp: Tuy nhiên, khi nói về ước mơ, sẽ có những ý kiến phản biện rất thực tế và gai góc. Chúng ta hãy cùng đối diện thẳng thắn với chúng!"
+      },
+      {
+        title: "Slide 08: Góc phản biện sắc bén (Cái đầu lạnh & Trái tim nóng)",
+        script: "Có hai phản biện rất thực tế. Phản biện thứ nhất: 'Mơ mộng xa xôi không nuôi sống được bản thân, cơm áo gạo tiền mới là cốt lõi'. Đúng vậy, theo đuổi ước mơ không có nghĩa là sống phi thực tế! Giải pháp là chiến lược 'Hai chiếc ví': dùng việc học và công việc ổn định (ví 1) để đảm bảo cuộc sống và nuôi dưỡng nguồn lực cho ước mơ (ví 2), bước ra có tính toán kỹ lưỡng. Phản biện thứ hai: 'Không phải ai cũng có điều kiện và tài năng để thành công'. Thực ra, ước mơ không phân biệt giàu nghèo — ước mơ thoát nghèo, sống tử tế cũng cao quý như làm chủ tập đoàn. Và tài năng không tự nhiên sinh ra, nó hình thành từ chính quá trình dám làm, dám sai và dám sửa!",
+        transition: "👉 Chuyển tiếp: Giữ cái đầu lạnh và trái tim nóng rồi, bây giờ chúng mình hãy bắt tay ngay vào Thử thách 7 ngày dành riêng cho lớp chúng ta!"
+      },
+      {
+        title: "Slide 09: Thử thách 7 ngày dành cho học sinh",
+        script: "Để bài thuyết trình hôm nay biến thành hành động thật, mình đề xuất Thử thách 7 ngày: Ngày 1-2, chủ động giơ tay phát biểu ít nhất 1 lần. Ngày 3-4, dành 30 phút mỗi ngày tập trung học một kỹ năng mới. Ngày 5-6, chia sẻ mục tiêu của bạn với thầy cô hoặc người bạn tin cậy. Và Ngày 7, đăng ký một hoạt động hoặc cuộc thi mà trước giờ bạn vẫn luôn ngần ngại.",
+        transition: "👉 Chuyển tiếp: Trước khi kết thúc, mình muốn gửi gắm một thông điệp quan trọng nhất đến từng bạn ngồi đây."
+      },
+      {
+        title: "Slide 10: Thông điệp dành cho mỗi người",
+        script: "Các bạn ơi, bạn không cần phải đợi đến khi mình thật hoàn hảo rồi mới bắt đầu. Mỗi bước tiến nhỏ, mỗi trang sách mở ra, mỗi lần vượt qua sự rụt rè đều mang một ý nghĩa lớn lao. Hãy luôn nhớ rằng: 'Chân trời không thuộc về người đứng nhìn, mà thuộc về đôi chân dám bước.'",
+        transition: "👉 Chuyển tiếp: Và bây giờ, hãy cùng mình quay trở lại câu hỏi lúc mở đầu để khép lại buổi chia sẻ hôm nay."
+      },
+      {
+        title: "Slide 11: Kết thúc đầy cảm xúc",
+        script: "Lúc mở đầu, mình đã hỏi các bạn sẽ làm gì nếu không sợ thất bại. Còn bây giờ, câu hỏi mình muốn gửi lại cho cả lớp là: 'Sau hôm nay, bạn sẽ làm điều gì ĐẦU TIÊN để tiến gần hơn đến ước mơ của mình?' Hãy viết điều đó vào trang đầu cuốn vở của bạn và thực hiện nó ngay trong hôm nay. Cảm ơn thầy cô và các bạn đã lắng nghe!",
+        transition: "🎉 Hoàn thành bài thuyết trình! Hãy mỉm cười, cúi chào và sẵn sàng giao lưu Q&A cùng cả lớp."
+      }
+    ];
+
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    let currentIndex = 0;
+
+    const progressBar = document.getElementById('progress-bar');
+    const slideCounter = document.getElementById('slide-counter');
+    const dotsNav = document.getElementById('dots-nav');
+    const ambientBg = document.getElementById('ambient-bg');
+    const horizonGlow = document.getElementById('horizon-glow');
+
+    const notesDrawer = document.getElementById('notes-drawer');
+    const notesSlideTitle = document.getElementById('notes-slide-title');
+    const notesBody = document.getElementById('notes-body');
+    const notesNext = document.getElementById('notes-next');
+
+    // Khởi tạo chấm điều hướng
+    slides.forEach((_, idx) => {
+      const dot = document.createElement('div');
+      dot.className = 'dot' + (idx === 0 ? ' active' : '');
+      dot.title = `Slide ${idx + 1}`;
+      dot.addEventListener('click', () => goToSlide(idx));
+      dotsNav.appendChild(dot);
+    });
+
+    const dots = document.querySelectorAll('.dot');
+
+    function updateSpeakerNotes(idx) {
+      const note = speakerNotes[idx];
+      notesSlideTitle.textContent = `🎙️ ${note.title}`;
+      notesBody.textContent = note.script;
+      notesNext.textContent = note.transition;
+    }
+
+    function goToSlide(index) {
+      if (index < 0 || index >= totalSlides) return;
+      currentIndex = index;
+
+      slides.forEach((slide, idx) => {
+        slide.classList.remove('active', 'prev');
+        if (idx === currentIndex) {
+          slide.classList.add('active');
+        } else if (idx < currentIndex) {
+          slide.classList.add('prev');
+        }
+      });
+
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === currentIndex);
+      });
+
+      // Cập nhật thanh tiến trình & bộ đếm
+      const progressPercent = ((currentIndex + 1) / totalSlides) * 100;
+      progressBar.style.width = `${progressPercent}%`;
+      slideCounter.textContent = `${String(currentIndex + 1).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}`;
+
+      // Đổi màu bầu trời từ Đêm Tím Than -> Bình Minh Rực Rỡ theo tiến trình slide
+      const ratio = currentIndex / (totalSlides - 1);
+      const orangeAlpha = (0.18 + ratio * 0.28).toFixed(2);
+      const goldAlpha = (0.25 + ratio * 0.35).toFixed(2);
+      ambientBg.style.background = `radial-gradient(circle at 50% ${115 - ratio * 25}%, rgba(255, 107, 53, ${orangeAlpha}), rgba(42, 27, 78, 0.65) 48%, #070B19 88%)`;
+      horizonGlow.style.background = `radial-gradient(ellipse at center, rgba(255, 184, 0, ${goldAlpha}) 0%, rgba(255, 107, 53, ${orangeAlpha}) 45%, transparent 78%)`;
+
+      updateSpeakerNotes(currentIndex);
+    }
+
+    // Điều khiển nút bấm
+    document.getElementById('prev-btn').addEventListener('click', () => goToSlide(currentIndex - 1));
+    document.getElementById('next-btn').addEventListener('click', () => goToSlide(currentIndex + 1));
+
+    // Bật/Tắt Lời thoại
+    function toggleNotes() {
+      notesDrawer.classList.toggle('open');
+    }
+    document.getElementById('notes-btn').addEventListener('click', toggleNotes);
+    document.getElementById('close-notes').addEventListener('click', toggleNotes);
+
+    // Toàn màn hình
+    document.getElementById('fs-btn').addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen();
+      }
+    });
+
+    // Điều khiển bàn phím
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        goToSlide(currentIndex + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        goToSlide(currentIndex - 1);
+      } else if (e.key.toLowerCase() === 'n') {
+        toggleNotes();
+      } else if (e.key.toLowerCase() === 'f') {
+        document.getElementById('fs-btn').click();
+      }
+    });
+
+    // Hỗ trợ vuốt cảm ứng (Touch Swipe)
+    let touchStartX = 0;
+    window.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+    window.addEventListener('touchend', (e) => {
+      const diff = touchStartX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) goToSlide(currentIndex + 1);
+        else goToSlide(currentIndex - 1);
+      }
+    });
+
+    // Hiệu ứng nghiêng 3D (3D Parallax Tilt) cho các thẻ Glass Card
+    document.querySelectorAll('.tilt-card').forEach((card) => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -6;
+        const rotateY = ((x - centerX) / centerX) * 6;
+        card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) translateY(0)';
+      });
+    });
+
+    // Canvas Particles: Sao đêm & Đốm sáng bình minh bay lên
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2.4 + 0.6;
+        this.speedY = -(Math.random() * 0.45 + 0.12);
+        this.speedX = (Math.random() - 0.5) * 0.3;
+        this.alpha = Math.random() * 0.75 + 0.15;
+        this.isGold = Math.random() > 0.45;
+      }
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        if (this.y < -10) {
+          this.y = canvas.height + 10;
+          this.x = Math.random() * canvas.width;
+        }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.isGold
+          ? `rgba(255, 184, 0, ${this.alpha})`
+          : `rgba(248, 250, 252, ${this.alpha})`;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = this.isGold ? '#FFB800' : '#FFFFFF';
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 85; i++) {
+      particles.push(new Particle());
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p) => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+
+    updateSpeakerNotes(0);
+    animateParticles();
+  </script>
+</body>
+</html>
